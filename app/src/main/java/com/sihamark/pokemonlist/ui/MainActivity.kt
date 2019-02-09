@@ -1,8 +1,9 @@
-package com.sihamark.pokemonlist
+package com.sihamark.pokemonlist.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.annotation.ContentView
+import com.sihamark.pokemonlist.R
 
 /**
  * @author Hans Markwart (fanaloce@gmail.com)
