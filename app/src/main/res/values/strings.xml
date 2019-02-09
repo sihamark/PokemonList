@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Pokemon List</string>
+    <string name="navigation_all">All</string>
+    <string name="navigation_selected">selected</string>
+</resources>
