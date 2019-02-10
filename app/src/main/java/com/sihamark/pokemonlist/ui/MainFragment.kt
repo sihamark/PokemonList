@@ -2,16 +2,10 @@ package com.sihamark.pokemonlist.ui
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.annotation.ContentView
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.FragmentTransaction
 import com.sihamark.pokemonlist.R
-import com.sihamark.pokemonlist.databinding.ItemPokemonBinding
-import com.sihamark.pokemonlist.model.Pokemon
-import com.sihamark.pokemonlist.realm.RealmRecyclerViewAdapter
-import io.realm.OrderedRealmCollection
 import kotlinx.android.synthetic.main.fragment_main.*
 
 /**
@@ -22,31 +16,32 @@ import kotlinx.android.synthetic.main.fragment_main.*
 @ContentView(R.layout.fragment_main)
 class MainFragment : Fragment() {
 
-    private val model: MainFragmentViewModel by viewModels()
+    private val allFragment by lazy { AllPokemonFragment.newInstance() }
+    private val selectedFragment by lazy { SelectedPokemonFragment.newInstance() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        recycler.adapter = Adapter()
+        navigation.setOnNavigationItemSelectedListener {
+            val target = when (it.itemId) {
+                R.id.action_navigation_all -> allFragment
+                R.id.action_navigation_selected -> selectedFragment
+                else -> null
+            }
+
+            if (target != null) {
+                navigateTo(target)
+            }
+
+            true
+        }
+
+        navigateTo(allFragment)
     }
 
-    inner class Adapter : RealmRecyclerViewAdapter<Pokemon, Adapter.ViewHolder>(
-        model.pokemon as OrderedRealmCollection<Pokemon>, true, true
-    ) {
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            ViewHolder(ItemPokemonBinding.inflate(layoutInflater, parent, false))
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bind(getItem(position) ?: return)
-        }
-
-        inner class ViewHolder(
-            private val binding: ItemPokemonBinding
-        ) : RecyclerView.ViewHolder(binding.root) {
-            fun bind(pokemon: Pokemon) {
-                binding.number = String.format("#%03d", pokemon.number)
-                binding.name = pokemon.name("en")
-            }
-        }
+    private fun navigateTo(target: Fragment) {
+        requireFragmentManager().beginTransaction()
+            .replace(R.id.fragment_container, target)
+            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            .commit()
     }
 
     companion object {

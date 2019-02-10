@@ -2,9 +2,8 @@ package com.sihamark.pokemonlist.ui
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.sihamark.pokemonlist.data.PokemonDao
 import com.sihamark.pokemonlist.model.Pokemon
-import io.realm.Realm
-import io.realm.kotlin.where
 
 /**
  * @author Hans Markwart (fanaloce@gmail.com)
@@ -13,15 +12,25 @@ import io.realm.kotlin.where
  */
 class MainFragmentViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val realm = Realm.getDefaultInstance()
+    private val dao = PokemonDao()
 
     val pokemon
-        get() = realm.where<Pokemon>()
-            .sort("number")
-            .findAllAsync()
+        get() = dao.getPokemonSorted()
+
+    val selectedPokemon
+        get() = dao.getSelectedPokemonSorted()
+
 
     override fun onCleared() {
-        realm.close()
+        dao.close()
+    }
+
+    fun select(pokemon: Pokemon) {
+        dao.setSelection(pokemon, true)
+    }
+
+    fun deselect(pokemon: Pokemon) {
+        dao.setSelection(pokemon, false)
     }
 
 
