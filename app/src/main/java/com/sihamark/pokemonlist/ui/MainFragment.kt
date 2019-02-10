@@ -6,6 +6,7 @@ import androidx.annotation.ContentView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.sihamark.pokemonlist.R
+import com.sihamark.pokemonlist.utility.setupSearch
 import kotlinx.android.synthetic.main.fragment_main.*
 
 /**
@@ -20,6 +21,7 @@ class MainFragment : Fragment() {
     private val selectedFragment by lazy { SelectedPokemonFragment.newInstance() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        toolbar.inflateMenu(R.menu.search)
         navigation.setOnNavigationItemSelectedListener {
             val target = when (it.itemId) {
                 R.id.action_navigation_all -> allFragment
@@ -35,10 +37,17 @@ class MainFragment : Fragment() {
         }
 
         navigateTo(allFragment)
+
+        activity?.setupSearch(
+            toolbar,
+            R.id.action_search,
+            0,
+            R.string.search_title
+        )
     }
 
     private fun navigateTo(target: Fragment) {
-        requireFragmentManager().beginTransaction()
+        childFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, target)
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .commit()
