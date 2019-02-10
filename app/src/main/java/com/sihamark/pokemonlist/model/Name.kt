@@ -11,7 +11,6 @@ import java.util.*
  */
 open class Name(
     @PrimaryKey var id: String = UUID.randomUUID().toString(),
-    var pokemon: Pokemon? = null,
     var language: String = "",
     var name: String = ""
 ) : RealmObject()

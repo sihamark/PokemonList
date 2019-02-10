@@ -1,8 +1,8 @@
 package com.sihamark.pokemonlist.ui
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.annotation.ContentView
+import androidx.fragment.app.FragmentActivity
 import com.sihamark.pokemonlist.R
 
 /**
@@ -11,11 +11,12 @@ import com.sihamark.pokemonlist.R
  * created at 07.02.2019.
  */
 @ContentView(R.layout.activity_main)
-class MainActivity : ComponentActivity() {
+class MainActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.root, MainFragment.newInstance())
+            .commit()
     }
-
 }
