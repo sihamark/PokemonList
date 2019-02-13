@@ -1,5 +1,6 @@
 package com.sihamark.pokemonlist.data
 
+import android.content.Context
 import com.sihamark.pokemonlist.model.Name
 import com.sihamark.pokemonlist.model.Pokemon
 import com.sihamark.pokemonlist.model.SelectedPokemon
@@ -10,6 +11,7 @@ import io.realm.RealmList
 import io.realm.RealmResults
 import io.realm.kotlin.where
 import java.io.Closeable
+import java.io.File
 
 /**
  * @author Hans Markwart (fanaloce@gmail.com)
@@ -97,5 +99,10 @@ class PokemonDao : Closeable {
                 }
             }
         }
+    }
+
+    fun copyToExternal(context: Context) {
+        val file = File(context.getExternalFilesDir("realm"), "pokemon.realm")
+        realm.writeCopyTo(file)
     }
 }

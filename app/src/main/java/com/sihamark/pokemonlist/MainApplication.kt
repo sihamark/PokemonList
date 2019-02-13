@@ -2,7 +2,9 @@ package com.sihamark.pokemonlist
 
 import android.app.Application
 import com.sihamark.pokemonlist.data.Importer
+import com.sihamark.pokemonlist.data.PokemonDao
 import io.realm.Realm
+import io.realm.RealmConfiguration
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -21,10 +23,23 @@ class MainApplication : Application() {
         Timber.plant(Timber.DebugTree())
 
         Realm.init(this)
+        Realm.setDefaultConfiguration(
+            RealmConfiguration.Builder()
+                .assetFile("pokemon.realm")
+                .build()
+        )
 
+//        loadAndExportPokemon()
+    }
+
+    private fun loadAndExportPokemon() {
         GlobalScope.launch {
             try {
-                Importer(this@MainApplication).load()
+                Importer().load()
+                PokemonDao().use {
+                    it.copyToExternal(this@MainApplication)
+                }
+                Timber.e("successfully wrote realm")
             } catch (e: Throwable) {
                 Timber.e(e)
             }

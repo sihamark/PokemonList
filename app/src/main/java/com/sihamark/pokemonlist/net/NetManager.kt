@@ -16,6 +16,17 @@ class NetManager {
 
     private val client = OkHttpClient()
 
+    fun loadGermanNames(): BufferedSource {
+        val request = Request.Builder()
+            .url(GERMAN_NAMES)
+            .build()
+
+        return client
+            .newCall(request)
+            .execute()
+            .body()?.source() ?: error("could not read german pokemon names")
+    }
+
     fun loadPokemonList(): List<Pokemon> {
         val request = Request.Builder()
             .url(POKEMON_LIST)
@@ -54,5 +65,6 @@ class NetManager {
 
     companion object {
         private const val POKEMON_LIST = "https://raw.githubusercontent.com/fanzeyi/pokemon.json/master/pokedex.json"
+        private const val GERMAN_NAMES = "https://bulbapedia.bulbagarden.net/wiki/List_of_German_Pok%C3%A9mon_names"
     }
 }

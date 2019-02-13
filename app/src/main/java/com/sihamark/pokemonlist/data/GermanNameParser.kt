@@ -1,18 +1,14 @@
 package com.sihamark.pokemonlist.data
 
-import android.content.Context
-import com.sihamark.pokemonlist.R
+import okio.BufferedSource
+import java.nio.charset.Charset
 
-class GermanNameParser(private val context: Context) {
+class GermanNameParser {
 
-    fun parse(): List<PokemonName> {
-        val text = context.resources.openRawResource(R.raw.german_pokemon_names).use {
-            it.bufferedReader().use {
-                it.readText()
-            }
-        }
+    fun parse(source: BufferedSource): List<PokemonName> {
+        val rawPokemonNames = source.readString(Charset.defaultCharset())
 
-        return regex.findAll(text).mapNotNull {
+        return regex.findAll(rawPokemonNames).mapNotNull {
             val parsedValues = it.groupValues
             PokemonName(
                 parsedValues[1].toIntOrNull() ?: return@mapNotNull null,
