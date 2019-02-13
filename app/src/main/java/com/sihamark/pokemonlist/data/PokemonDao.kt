@@ -65,13 +65,36 @@ class PokemonDao : Closeable {
 
     fun setSelection(pokemon: Pokemon, select: Boolean) {
         realm.executeTransaction { realm ->
-            val selectedPokemon = realm.where<SelectedPokemon>()
-                .equalTo("number", pokemon.number)
-                .findFirst()
+            val selectedPokemon = findSelectedPokemon(pokemon)
 
             when {
                 selectedPokemon != null -> selectedPokemon.isSelected = select
                 select -> realm.insertOrUpdate(SelectedPokemon.create(pokemon, select))
+            }
+        }
+    }
+
+    private fun findSelectedPokemon(pokemon: Pokemon) =
+        realm.where<SelectedPokemon>()
+            .equalTo("number", pokemon.number)
+            .findFirst()
+
+    private fun findPokemon(number: Int) =
+        realm.where<Pokemon>()
+            .equalTo("number", number)
+            .findFirst()
+
+    fun importPokemonNames(language: String, names: List<Pair<Int, String>>) {
+        names.forEach { (number, name) ->
+            findPokemon(number)?.let { pokemon ->
+                realm.executeTransaction {
+                    val foundName = pokemon.names.find { it.language == language }
+                    if (foundName != null) {
+                        foundName.name = name
+                    } else {
+                        pokemon.names.add(Name(language, name))
+                    }
+                }
             }
         }
     }

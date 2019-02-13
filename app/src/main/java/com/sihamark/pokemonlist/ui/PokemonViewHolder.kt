@@ -11,7 +11,7 @@ class PokemonViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(pokemon: Pokemon, onClick: () -> Unit) {
         binding.number = String.format("#%03d", pokemon.number)
-        binding.name = pokemon.name("en")
+        binding.name = pokemon.name("de")
         binding.setOnClick(onClick)
     }
 

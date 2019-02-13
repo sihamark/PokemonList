@@ -12,6 +12,7 @@ import timber.log.Timber
  *
  * created at 09.02.2019.
  */
+@Suppress("unused")
 class MainApplication : Application() {
 
     override fun onCreate() {
@@ -23,7 +24,7 @@ class MainApplication : Application() {
 
         GlobalScope.launch {
             try {
-                Importer().load()
+                Importer(this@MainApplication).load()
             } catch (e: Throwable) {
                 Timber.e(e)
             }

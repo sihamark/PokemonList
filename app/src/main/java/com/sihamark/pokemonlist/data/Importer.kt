@@ -1,5 +1,6 @@
 package com.sihamark.pokemonlist.data
 
+import android.content.Context
 import com.sihamark.pokemonlist.net.NetManager
 
 
@@ -8,7 +9,7 @@ import com.sihamark.pokemonlist.net.NetManager
  *
  * created at 07.02.2019.
  */
-class Importer {
+class Importer(private val context: Context) {
 
     private val netManager = NetManager()
 
@@ -18,6 +19,13 @@ class Importer {
         PokemonDao().use { dao ->
             dao.importTypes(pokemon.flatMap { it.type }.distinct())
             dao.importPokemon(pokemon)
+        }
+
+        val germanNameParser = GermanNameParser(context)
+        val germanNames = germanNameParser.parse().map { it.number to it.name }
+
+        PokemonDao().use { dao ->
+            dao.importPokemonNames("de", germanNames)
         }
     }
 }
