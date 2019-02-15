@@ -86,6 +86,12 @@ class PokemonDao : Closeable {
             .equalTo("number", number)
             .findFirst()
 
+    private fun findPokemon(name: String, language: String) =
+        realm.where<Pokemon>()
+            .equalTo("names.name", name)
+            .equalTo("names.language", language)
+            .findFirst()
+
     fun importPokemonNames(language: String, names: List<Pair<Int, String>>) {
         names.forEach { (number, name) ->
             findPokemon(number)?.let { pokemon ->
@@ -104,5 +110,27 @@ class PokemonDao : Closeable {
     fun copyToExternal(context: Context) {
         val file = File(context.getExternalFilesDir("realm"), "pokemon.realm")
         realm.writeCopyTo(file)
+    }
+
+    fun searchAndSelect(pokemonQuery: String, language: String): SearchResult {
+        val number = pokemonQuery.toIntOrNull()
+        val pokemon = (if (number != null) {
+            findPokemon(number)
+        } else {
+            findPokemon(pokemonQuery, language)
+        }) ?: return SearchResult.NotFound
+
+        val selectedPokemon = findSelectedPokemon(pokemon)
+        return if (selectedPokemon == null || !selectedPokemon.isSelected) {
+            SearchResult.AddedToList(pokemon)
+        } else {
+            SearchResult.AlreadyInList(pokemon)
+        }
+    }
+
+    sealed class SearchResult {
+        object NotFound : SearchResult()
+        data class AlreadyInList(val pokemon: Pokemon) : SearchResult()
+        data class AddedToList(val pokemon: Pokemon) : SearchResult()
     }
 }

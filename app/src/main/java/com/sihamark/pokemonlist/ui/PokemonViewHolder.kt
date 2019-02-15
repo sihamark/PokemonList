@@ -10,8 +10,8 @@ class PokemonViewHolder(
     private val binding: ItemPokemonBinding
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(pokemon: Pokemon, onClick: () -> Unit) {
-        binding.number = String.format("#%03d", pokemon.number)
-        binding.name = pokemon.name("de")
+        binding.number = pokemon.formattedNumber()
+        binding.name = pokemon.name(itemView.context)
         binding.setOnClick(onClick)
     }
 

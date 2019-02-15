@@ -1,6 +1,7 @@
 package com.sihamark.pokemonlist.ui
 
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import androidx.annotation.ContentView
 import androidx.fragment.app.Fragment
@@ -22,6 +23,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         toolbar.inflateMenu(R.menu.search)
+        toolbar.setOnMenuItemClickListener(::onClickMenuItem)
         navigation.setOnNavigationItemSelectedListener {
             val target = when (it.itemId) {
                 R.id.action_navigation_all -> allFragment
@@ -51,6 +53,14 @@ class MainFragment : Fragment() {
             .replace(R.id.fragment_container, target)
             .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             .commit()
+    }
+
+    private fun onClickMenuItem(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_show_notification) {
+            Notifications.showNotification(activity?.application ?: return false)
+            return true
+        }
+        return false
     }
 
     companion object {

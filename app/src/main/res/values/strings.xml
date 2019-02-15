@@ -3,4 +3,5 @@
     <string name="navigation_all">All</string>
     <string name="navigation_selected">selected</string>
     <string name="search_title">Search Pokémon</string>
+    <string name="show_notification">show notification</string>
 </resources>
