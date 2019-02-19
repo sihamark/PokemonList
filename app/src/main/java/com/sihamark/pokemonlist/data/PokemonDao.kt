@@ -122,6 +122,7 @@ class PokemonDao : Closeable {
 
         val selectedPokemon = findSelectedPokemon(pokemon)
         return if (selectedPokemon == null || !selectedPokemon.isSelected) {
+            setSelection(pokemon, true)
             SearchResult.AddedToList(pokemon)
         } else {
             SearchResult.AlreadyInList(pokemon)
