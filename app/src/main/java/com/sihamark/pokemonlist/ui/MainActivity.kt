@@ -18,5 +18,9 @@ class MainActivity : FragmentActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.root, MainFragment.newInstance())
             .commit()
+
+        if (intent.action == "com.sihamark.pokemonlist.SHOW_NOTIFICATION") {
+            Notifications.showNotification(this)
+        }
     }
 }

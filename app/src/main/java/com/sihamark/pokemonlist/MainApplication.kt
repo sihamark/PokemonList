@@ -1,8 +1,10 @@
 package com.sihamark.pokemonlist
 
 import android.app.Application
+import androidx.core.app.NotificationCompat
 import com.sihamark.pokemonlist.data.Importer
 import com.sihamark.pokemonlist.data.PokemonDao
+import com.sihamark.pokemonlist.ui.Notifications
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import kotlinx.coroutines.GlobalScope
@@ -16,6 +18,10 @@ import timber.log.Timber
  */
 @Suppress("unused")
 class MainApplication : Application() {
+
+    val inputBuilder: NotificationCompat.Builder by lazy {
+        Notifications.inputNotification(this)
+    }
 
     override fun onCreate() {
         super.onCreate()

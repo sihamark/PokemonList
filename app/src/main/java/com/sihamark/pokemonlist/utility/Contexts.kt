@@ -3,6 +3,7 @@ package com.sihamark.pokemonlist.utility
 import android.content.Context
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import com.sihamark.pokemonlist.MainApplication
 import com.sihamark.pokemonlist.R
 
 /**
@@ -16,6 +17,9 @@ val Context.inputManager
 
 val Context.language: String
     get() = getString(R.string.language)
+
+val Context.mainApplication: MainApplication
+    get() = applicationContext as MainApplication
 
 fun Context.toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT): Toast =
     Toast.makeText(this, message, duration).apply {

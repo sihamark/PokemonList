@@ -6,6 +6,7 @@ import android.view.View
 import androidx.annotation.ContentView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.sihamark.pokemonlist.MainApplication
 import com.sihamark.pokemonlist.R
 import com.sihamark.pokemonlist.utility.setupSearch
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -57,7 +58,7 @@ class MainFragment : Fragment() {
 
     private fun onClickMenuItem(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_show_notification) {
-            Notifications.showNotification(activity?.application ?: return false)
+            Notifications.showNotification(activity?.application as? MainApplication ?: return false)
             return true
         }
         return false

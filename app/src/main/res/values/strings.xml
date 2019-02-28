@@ -1,7 +1,9 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">Pokemon List</string>
     <string name="navigation_all">All</string>
     <string name="navigation_selected">selected</string>
     <string name="search_title">Search Pokémon</string>
     <string name="show_notification">show notification</string>
+    <string name="shortcut_short_label">Show Notification</string>
+    <string name="shortcut_long_label">Show Notification to Add Pokemon</string>
 </resources>
