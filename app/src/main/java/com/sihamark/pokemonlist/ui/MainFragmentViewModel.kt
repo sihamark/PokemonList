@@ -15,10 +15,10 @@ class MainFragmentViewModel(application: Application) : AndroidViewModel(applica
     private val dao = PokemonDao()
 
     val pokemon
-        get() = dao.getPokemonSorted()
+        get() = dao.allPokemonSorted()
 
     val selectedPokemon
-        get() = dao.getSelectedPokemonSorted()
+        get() = dao.allSelectedPokemonSorted()
 
 
     override fun onCleared() {

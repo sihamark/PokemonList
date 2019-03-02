@@ -11,6 +11,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
 import com.sihamark.pokemonlist.AddPokemonReceiver
 import com.sihamark.pokemonlist.R
+import com.sihamark.pokemonlist.data.PokemonDao
 import com.sihamark.pokemonlist.utility.mainApplication
 
 /**
@@ -25,11 +26,13 @@ object Notifications {
 
     const val KEY_INPUT_POKEMON = "input_pokemon"
 
+    private const val TEXT = "Add Pokemon by Name or by Number"
+
     fun inputNotification(context: Context): NotificationCompat.Builder =
         NotificationCompat.Builder(context, Notifications.CHANNEL_INPUT)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle("Pokemon List")
-            .setContentText("Add Pokemon by Name or by Number")
+            .setContentText(TEXT)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(false)
             .setContentIntent(getContentPendingIntent(context))
@@ -37,6 +40,18 @@ object Notifications {
 
     fun showNotification(context: Context) {
         val builder = context.mainApplication.inputBuilder
+
+        val pokemon = PokemonDao().use { dao ->
+            dao.allSelectedPokemonSorted()
+                .joinToString(", ") {
+                    it.pokemon.name(context)
+                }
+        }
+
+        builder.setStyle(
+            NotificationCompat.BigTextStyle()
+                .bigText(TEXT + "\n" + pokemon)
+        )
 
         val manager = NotificationManagerCompat.from(context)
 

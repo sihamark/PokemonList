@@ -26,55 +26,16 @@ class PokemonDao : Closeable {
         realm.close()
     }
 
-    fun importTypes(types: List<String>) {
-        realm.executeTransaction { realm ->
-            types.forEach { type ->
-                realm.insertOrUpdate(Type(type))
-            }
-        }
-    }
-
-    fun importPokemon(pokemon: List<NetManager.Pokemon>) {
-        realm.executeTransaction { realm ->
-            pokemon.forEach { pokemon ->
-                realm.insertOrUpdate(
-                    com.sihamark.pokemonlist.model.Pokemon(
-                        pokemon.id,
-                        RealmList(
-                            Name(language = "en", name = pokemon.name.english),
-                            Name(language = "ja", name = pokemon.name.japanese),
-                            Name(language = "zh", name = pokemon.name.chinese)
-                        ),
-                        RealmList(
-                            *pokemon.type.map { Type(it) }.toTypedArray()
-                        )
-                    )
-                )
-            }
-        }
-    }
-
-    fun getPokemonSorted(): RealmResults<Pokemon> =
+    fun allPokemonSorted(): RealmResults<Pokemon> =
         realm.where<Pokemon>()
             .sort("number")
             .findAllAsync()
 
-    fun getSelectedPokemonSorted(): RealmResults<SelectedPokemon> =
+    fun allSelectedPokemonSorted(): RealmResults<SelectedPokemon> =
         realm.where<SelectedPokemon>()
             .equalTo("isSelected", true)
             .sort("linkedPokemon.number")
             .findAllAsync()
-
-    fun setSelection(pokemon: Pokemon, select: Boolean) {
-        realm.executeTransaction { realm ->
-            val selectedPokemon = findSelectedPokemon(pokemon)
-
-            when {
-                selectedPokemon != null -> selectedPokemon.isSelected = select
-                select -> realm.insertOrUpdate(SelectedPokemon.create(pokemon, select))
-            }
-        }
-    }
 
     private fun findSelectedPokemon(pokemon: Pokemon) =
         realm.where<SelectedPokemon>()
@@ -91,21 +52,6 @@ class PokemonDao : Closeable {
             .equalTo("names.name", name)
             .equalTo("names.language", language)
             .findFirst()
-
-    fun importPokemonNames(language: String, names: List<Pair<Int, String>>) {
-        names.forEach { (number, name) ->
-            findPokemon(number)?.let { pokemon ->
-                realm.executeTransaction {
-                    val foundName = pokemon.names.find { it.language == language }
-                    if (foundName != null) {
-                        foundName.name = name
-                    } else {
-                        pokemon.names.add(Name(language, name))
-                    }
-                }
-            }
-        }
-    }
 
     fun copyToExternal(context: Context) {
         val file = File(context.getExternalFilesDir("realm"), "pokemon.realm")
@@ -126,6 +72,62 @@ class PokemonDao : Closeable {
             SearchResult.AddedToList(pokemon)
         } else {
             SearchResult.AlreadyInList(pokemon)
+        }
+    }
+
+    fun setSelection(pokemon: Pokemon, select: Boolean) {
+        realm.executeTransaction { realm ->
+            val selectedPokemon = findSelectedPokemon(pokemon)
+
+            when {
+                selectedPokemon != null -> selectedPokemon.isSelected = select
+                select -> realm.insertOrUpdate(SelectedPokemon.create(pokemon, select))
+            }
+        }
+    }
+
+    inner class Importer {
+        fun importTypes(types: List<String>) {
+            realm.executeTransaction { realm ->
+                types.forEach { type ->
+                    realm.insertOrUpdate(Type(type))
+                }
+            }
+        }
+
+        fun importPokemon(pokemon: List<NetManager.Pokemon>) {
+            realm.executeTransaction { realm ->
+                pokemon.forEach { pokemon ->
+                    realm.insertOrUpdate(
+                        com.sihamark.pokemonlist.model.Pokemon(
+                            pokemon.id,
+                            RealmList(
+                                Name(language = "en", name = pokemon.name.english),
+                                Name(language = "ja", name = pokemon.name.japanese),
+                                Name(language = "zh", name = pokemon.name.chinese)
+                            ),
+                            RealmList(
+                                *pokemon.type.map { Type(it) }.toTypedArray()
+                            )
+                        )
+                    )
+                }
+            }
+        }
+
+        fun importPokemonNames(language: String, names: List<Pair<Int, String>>) {
+            names.forEach { (number, name) ->
+                findPokemon(number)?.let { pokemon ->
+                    realm.executeTransaction {
+                        val foundName = pokemon.names.find { it.language == language }
+                        if (foundName != null) {
+                            foundName.name = name
+                        } else {
+                            pokemon.names.add(Name(language, name))
+                        }
+                    }
+                }
+            }
         }
     }
 

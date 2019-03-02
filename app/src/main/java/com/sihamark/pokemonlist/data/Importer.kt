@@ -16,8 +16,9 @@ class Importer {
         val pokemon = netManager.loadPokemonList()
 
         PokemonDao().use { dao ->
-            dao.importTypes(pokemon.flatMap { it.type }.distinct())
-            dao.importPokemon(pokemon)
+            val importer = dao.Importer()
+            importer.importTypes(pokemon.flatMap { it.type }.distinct())
+            importer.importPokemon(pokemon)
         }
 
         val germanNameSource = netManager.loadGermanNames()
@@ -26,7 +27,7 @@ class Importer {
             .map { it.number to it.name }
 
         PokemonDao().use { dao ->
-            dao.importPokemonNames("de", germanNames)
+            dao.Importer().importPokemonNames("de", germanNames)
         }
     }
 }
