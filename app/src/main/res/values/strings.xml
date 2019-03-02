@@ -6,4 +6,18 @@
     <string name="show_notification">show notification</string>
     <string name="shortcut_short_label">Show Notification</string>
     <string name="shortcut_long_label">Show Notification to Add Pokemon</string>
+
+    <string name="input_result_pokemon_not_found">No Pokemon Found!</string>
+    <string name="input_result_pokemon_already_in_list">%s is already in the list.</string>
+    <string name="input_result_pokemon_added_to_list">%s was added to the list.</string>
+    <string name="input_result_enter_pokemon">Please enter a Pokemon name or number!</string>
+
+    <string name="notification_channel_name">Input</string>
+    <string name="notification_channel_description">Add Pokemon to the list via the notification</string>
+
+    <string name="input_notification_title">Pokemon List</string>
+    <string name="input_notification_text">Add Pokemon by Name or by Number</string>
+
+    <string name="input_notification_title_add_pokemon">Add Pokemon</string>
+    <string name="input_notification_label_add_pokemon">Enter Pokemon name or number</string>
 </resources>

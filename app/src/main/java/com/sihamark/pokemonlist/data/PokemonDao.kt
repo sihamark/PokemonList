@@ -6,6 +6,7 @@ import com.sihamark.pokemonlist.model.Pokemon
 import com.sihamark.pokemonlist.model.SelectedPokemon
 import com.sihamark.pokemonlist.model.Type
 import com.sihamark.pokemonlist.net.NetManager
+import com.sihamark.pokemonlist.ui.name
 import io.realm.Realm
 import io.realm.RealmList
 import io.realm.RealmResults
@@ -87,6 +88,7 @@ class PokemonDao : Closeable {
     }
 
     inner class Importer {
+
         fun importTypes(types: List<String>) {
             realm.executeTransaction { realm ->
                 types.forEach { type ->
@@ -135,5 +137,14 @@ class PokemonDao : Closeable {
         object NotFound : SearchResult()
         data class AlreadyInList(val pokemon: Pokemon) : SearchResult()
         data class AddedToList(val pokemon: Pokemon) : SearchResult()
+    }
+
+    companion object {
+        fun namesOfSelectedPokemon(context: Context) = PokemonDao().use { dao ->
+            dao.allSelectedPokemonSorted()
+                .joinToString(", ") {
+                    it.pokemon.name(context)
+                }
+        }
     }
 }
