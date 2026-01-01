@@ -59,7 +59,8 @@ object NotificationController {
                         append("\n")
                         append(pokemon)
                     }
-                })
+                }
+            )
         )
 
         if (message != null) {
