@@ -12,11 +12,11 @@ import androidx.cursoradapter.widget.CursorAdapter
 class SearchViewHandler(
     private val activity: Activity,
     private val toolbar: Toolbar,
-    @IdRes
+    @param:IdRes
     private val itemId: Int,
-    @DrawableRes
+    @param:DrawableRes
     private val navigationIcon: Int,
-    @StringRes
+    @param:StringRes
     private val searchHint: Int,
     private val onExpand: ((isExpanded: Boolean) -> Unit)?,
     onQuery: ((query: String) -> Unit)? = null,

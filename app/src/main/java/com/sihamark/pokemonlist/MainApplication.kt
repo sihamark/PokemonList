@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.core.app.NotificationCompat
 import com.sihamark.pokemonlist.data.Importer
 import com.sihamark.pokemonlist.data.PokemonDao
-import com.sihamark.pokemonlist.ui.Notifications
+import com.sihamark.pokemonlist.ui.NotificationController
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import kotlinx.coroutines.GlobalScope
@@ -20,7 +20,7 @@ import timber.log.Timber
 class MainApplication : Application() {
 
     val inputBuilder: NotificationCompat.Builder by lazy {
-        Notifications.inputNotification(this)
+        NotificationController.inputNotification(this)
     }
 
     override fun onCreate() {
@@ -31,6 +31,8 @@ class MainApplication : Application() {
         Realm.init(this)
         Realm.setDefaultConfiguration(
             RealmConfiguration.Builder()
+                .allowWritesOnUiThread(true)
+                .allowQueriesOnUiThread(true)
                 .assetFile("pokemon.realm")
                 .build()
         )

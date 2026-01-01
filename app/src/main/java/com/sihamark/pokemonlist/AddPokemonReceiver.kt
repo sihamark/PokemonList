@@ -5,9 +5,11 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.app.RemoteInput
 import com.sihamark.pokemonlist.data.PokemonDao
-import com.sihamark.pokemonlist.data.PokemonDao.SearchResult.*
+import com.sihamark.pokemonlist.data.PokemonDao.SearchResult.AddedToList
+import com.sihamark.pokemonlist.data.PokemonDao.SearchResult.AlreadyInList
+import com.sihamark.pokemonlist.data.PokemonDao.SearchResult.NotFound
 import com.sihamark.pokemonlist.model.Pokemon
-import com.sihamark.pokemonlist.ui.Notifications
+import com.sihamark.pokemonlist.ui.NotificationController
 import com.sihamark.pokemonlist.ui.formattedNumber
 import com.sihamark.pokemonlist.ui.name
 import com.sihamark.pokemonlist.utility.language
@@ -20,19 +22,19 @@ import com.sihamark.pokemonlist.utility.language
 class AddPokemonReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val pokemonQuery = RemoteInput.getResultsFromIntent(intent).getCharSequence(Notifications.KEY_INPUT_POKEMON)
+        val pokemonQuery = RemoteInput.getResultsFromIntent(intent)!!
+            .getCharSequence(NotificationController.KEY_INPUT_POKEMON)
         val message = handleSearchQuery(context, pokemonQuery?.toString())
-        Notifications.showNotification(context, message)
+        NotificationController.showNotification(context, message)
     }
 
-    private fun handleSearchQuery(context: Context, query: String?): String? {
+    private fun handleSearchQuery(context: Context, query: String?): String {
         if (query == null || query.isBlank()) {
             return context.getString(R.string.input_result_enter_pokemon)
         }
 
         return PokemonDao().use { dao ->
-            val searchResult = dao.searchAndSelect(query, context.language)
-            when (searchResult) {
+            when (val searchResult = dao.searchAndSelect(query, context.language)) {
                 NotFound -> context.getString(R.string.input_result_pokemon_not_found)
                 is AlreadyInList ->
                     context.getString(

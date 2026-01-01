@@ -1,14 +1,20 @@
 package com.sihamark.pokemonlist.ui
 
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.app.NotificationChannel
 import android.app.NotificationManager.IMPORTANCE_DEFAULT
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_IMMUTABLE
+import android.app.PendingIntent.FLAG_MUTABLE
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
+import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.core.text.bold
 import androidx.core.text.buildSpannedString
 import com.sihamark.pokemonlist.AddPokemonReceiver
@@ -21,7 +27,7 @@ import com.sihamark.pokemonlist.utility.mainApplication
  *
  * created at 15.02.2019.
  */
-object Notifications {
+object NotificationController {
 
     private const val NOTIFICATION_INPUT = 1
     private const val CHANNEL_INPUT = "input"
@@ -29,7 +35,7 @@ object Notifications {
     const val KEY_INPUT_POKEMON = "input_pokemon"
 
     fun inputNotification(context: Context): NotificationCompat.Builder =
-        NotificationCompat.Builder(context, Notifications.CHANNEL_INPUT)
+        NotificationCompat.Builder(context, CHANNEL_INPUT)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(context.getString(R.string.input_notification_title))
             .setContentText(context.getString(R.string.input_notification_text))
@@ -39,8 +45,11 @@ object Notifications {
             .addAction(getRemoteAddAction(context))
 
     fun showNotification(context: Context, message: String? = null) {
+        if (checkSelfPermission(context, POST_NOTIFICATIONS) != PERMISSION_GRANTED) {
+            // Permission is not granted
+            return
+        }
         val builder = context.mainApplication.inputBuilder
-
         builder.setStyle(
             NotificationCompat.BigTextStyle().bigText(
                 buildSpannedString {
@@ -76,7 +85,7 @@ object Notifications {
             context,
             AddPokemonReceiver.REQUEST_ADD_POKEMON,
             Intent(context, AddPokemonReceiver::class.java),
-            PendingIntent.FLAG_UPDATE_CURRENT
+            FLAG_MUTABLE or FLAG_UPDATE_CURRENT
         )
         return NotificationCompat.Action.Builder(R.drawable.ic_add, title, replyPendingIntent)
             .addRemoteInput(remoteInput)
@@ -85,7 +94,7 @@ object Notifications {
 
     private fun getContentPendingIntent(context: Context): PendingIntent {
         val intent = Intent(context, MainActivity::class.java)
-        return PendingIntent.getActivity(context, 0, intent, 0)
+        return PendingIntent.getActivity(context, 0, intent, FLAG_IMMUTABLE or FLAG_UPDATE_CURRENT)
     }
 
     private fun createChannel(context: Context, manager: NotificationManagerCompat) {

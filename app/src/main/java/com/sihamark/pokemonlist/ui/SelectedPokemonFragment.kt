@@ -3,7 +3,6 @@ package com.sihamark.pokemonlist.ui
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.ContentView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.sihamark.pokemonlist.R
@@ -17,8 +16,7 @@ import io.realm.OrderedRealmCollection
  *
  * created at 10.02.2019.
  */
-@ContentView(R.layout.fragment_pokemon_list)
-class SelectedPokemonFragment : Fragment() {
+class SelectedPokemonFragment : Fragment(R.layout.fragment_pokemon_list) {
 
     private val model: MainFragmentViewModel by activityViewModels()
 
